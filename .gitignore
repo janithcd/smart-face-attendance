@@ -4,3 +4,5 @@ __pycache__/
 .idea/
 .vscode/
 .env
+# Biometric face datasets
+data/faces/
