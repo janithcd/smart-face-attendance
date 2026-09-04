@@ -6,3 +6,4 @@ __pycache__/
 .env
 # Biometric face datasets
 data/faces/
+data/models/
