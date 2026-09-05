@@ -7,3 +7,6 @@ __pycache__/
 # Biometric face datasets
 data/faces/
 data/models/
+
+# Downloaded AI models
+models/*.onnx
