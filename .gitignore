@@ -1,14 +1,29 @@
-﻿.venv/
+﻿# Python virtual environment
+.venv/
+
+# Python cache files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# IDE / editor files
 .idea/
 .vscode/
+
+# Environment variables
 .env
+
 # Biometric face datasets
 data/faces/
+
+# Generated face models / embeddings
 data/models/
 
-# Downloaded AI models
+# Downloaded AI model files
 models/*.onnx
 models/*.task
 
+# OS files
+.DS_Store
+Thumbs.db
