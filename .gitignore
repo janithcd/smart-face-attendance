@@ -11,3 +11,4 @@ data/models/
 # Downloaded AI models
 models/*.onnx
 models/*.task
+
