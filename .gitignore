@@ -27,3 +27,8 @@ models/*.task
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local attendance database
+data/*.db
+data/*.sqlite
+data/*.sqlite3

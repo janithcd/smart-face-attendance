@@ -4,6 +4,8 @@ import numpy as np
 import time
 from pathlib import Path
 
+from attendance_db import record_attendance
+
 
 # =========================================================
 # FILES
@@ -120,8 +122,8 @@ def verify_identity():
 
         if not file_path.exists():
             print(
-                f"Error: Required file "
-                f"not found: {file_path}"
+                f"Error: Required file not found: "
+                f"{file_path}"
             )
             return
 
@@ -237,6 +239,10 @@ def verify_identity():
 
     verification_passed = False
 
+    # Attendance UI state
+    attendance_message = ""
+    attendance_was_new = False
+
     last_timestamp = 0
 
     print("=" * 55)
@@ -273,6 +279,9 @@ def verify_identity():
 
         nonlocal verification_passed
 
+        nonlocal attendance_message
+        nonlocal attendance_was_new
+
         state = "IDENTIFY"
 
         candidate_index = None
@@ -291,6 +300,9 @@ def verify_identity():
         head_turn_completed = False
 
         verification_passed = False
+
+        attendance_message = ""
+        attendance_was_new = False
 
         print()
         print("Verification reset.")
@@ -328,7 +340,6 @@ def verify_identity():
             current_score = -1.0
 
             display_name = "Unknown"
-            display_id = ""
 
             face_color = (
                 0,
@@ -408,12 +419,6 @@ def verify_identity():
 
                     display_name = str(
                         person_names[
-                            best_index
-                        ]
-                    )
-
-                    display_id = str(
-                        person_ids[
                             best_index
                         ]
                     )
@@ -803,7 +808,7 @@ def verify_identity():
                             )
 
                     # =========================================
-                    # RETURN
+                    # RETURN + RECORD ATTENDANCE
                     # =========================================
 
                     elif state == "WAIT_RETURN":
@@ -828,6 +833,57 @@ def verify_identity():
                                 True
                             )
 
+                            # ---------------------------------
+                            # ATTENDANCE RECORDING
+                            # ---------------------------------
+
+                            person_id = str(
+                                person_ids[
+                                    locked_index
+                                ]
+                            )
+
+                            person_name = str(
+                                person_names[
+                                    locked_index
+                                ]
+                            )
+
+                            (
+                                attendance_added,
+                                attendance_time
+                            ) = record_attendance(
+                                person_id,
+                                person_name
+                            )
+
+                            attendance_was_new = (
+                                attendance_added
+                            )
+
+                            if attendance_added:
+
+                                attendance_message = (
+                                    "Attendance recorded "
+                                    f"at {attendance_time}"
+                                )
+
+                            else:
+
+                                if attendance_time:
+
+                                    attendance_message = (
+                                        "Already recorded "
+                                        f"at {attendance_time}"
+                                    )
+
+                                else:
+
+                                    attendance_message = (
+                                        "Attendance already "
+                                        "recorded today"
+                                    )
+
                             print()
                             print(
                                 "=" * 50
@@ -840,13 +896,36 @@ def verify_identity():
 
                             print(
                                 f"Person: "
-                                f"{person_names[locked_index]}"
+                                f"{person_name}"
                             )
 
                             print(
                                 f"ID: "
-                                f"{person_ids[locked_index]}"
+                                f"{person_id}"
                             )
+
+                            if attendance_added:
+
+                                print(
+                                    "Attendance recorded "
+                                    f"at: "
+                                    f"{attendance_time}"
+                                )
+
+                            else:
+
+                                print(
+                                    "Attendance already "
+                                    "recorded today."
+                                )
+
+                                if attendance_time:
+
+                                    print(
+                                        "Original "
+                                        "attendance time: "
+                                        f"{attendance_time}"
+                                    )
 
                             print(
                                 "=" * 50
@@ -881,6 +960,24 @@ def verify_identity():
                     (0, 255, 0),
                     2
                 )
+
+                if attendance_message:
+
+                    attendance_color = (
+                        (0, 255, 0)
+                        if attendance_was_new
+                        else (0, 255, 255)
+                    )
+
+                    cv2.putText(
+                        frame,
+                        attendance_message,
+                        (20, 180),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6,
+                        attendance_color,
+                        2
+                    )
 
             # =================================================
             # STATUS UI
@@ -920,7 +1017,7 @@ def verify_identity():
                         "Locked Identity: "
                         f"{person_names[locked_index]}"
                     ),
-                    (20, 190),
+                    (20, 220),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.6,
                     (255, 255, 255),
@@ -930,7 +1027,7 @@ def verify_identity():
             cv2.putText(
                 frame,
                 f"State: {state}",
-                (20, 225),
+                (20, 255),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.55,
                 (255, 255, 255),
@@ -940,7 +1037,7 @@ def verify_identity():
             cv2.putText(
                 frame,
                 "Q = Quit | R = Reset",
-                (20, 260),
+                (20, 290),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.55,
                 (255, 255, 255),
