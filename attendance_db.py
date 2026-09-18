@@ -160,6 +160,22 @@ def get_today_attendance():
 
     return records
 
+def get_all_attendance():
+
+    initialize_database()
+
+    with get_connection() as connection:
+
+        records = connection.execute(
+            """
+            SELECT *
+            FROM attendance
+            ORDER BY attendance_date DESC,
+                     attendance_time DESC
+            """
+        ).fetchall()
+
+    return records
 
 if __name__ == "__main__":
 
