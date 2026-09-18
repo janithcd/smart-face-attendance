@@ -1,34 +1,45 @@
 ﻿# Python virtual environment
 .venv/
 
-# Python cache files
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# IDE / editor files
+# Environment files
+.env
+.env.*
+
+# IDE
 .idea/
 .vscode/
 
-# Environment variables
-.env
-
-# Biometric face datasets
+# Biometric data
 data/faces/
-
-# Generated face models / embeddings
 data/models/
-
-# Downloaded AI model files
-models/*.onnx
-models/*.task
-
-# OS files
-.DS_Store
-Thumbs.db
 
 # Local attendance database
 data/*.db
 data/*.sqlite
 data/*.sqlite3
+
+# AI models
+models/*.onnx
+models/*.task
+
+# Generated exports
+exports/
+
+# React / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
