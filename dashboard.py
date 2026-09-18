@@ -331,6 +331,18 @@ class AttendanceDashboard(tk.Tk):
             padx=5
         )
 
+        people_button = ttk.Button(
+            action_frame,
+            text="Manage People",
+            style="Action.TButton",
+            command=self.manage_people
+        )
+
+        people_button.pack(
+            side="left",
+            padx=5
+        )
+
         build_button = ttk.Button(
             action_frame,
             text="Build Face Database",
@@ -700,6 +712,13 @@ class AttendanceDashboard(tk.Tk):
         self.launch_script(
             REGISTER_SCRIPT,
             "Person registration started."
+        )
+
+    def manage_people(self):
+
+        self.launch_script(
+            PEOPLE_MANAGER_SCRIPT,
+            "Registered people manager opened."
         )
 
     def build_face_database(self):
