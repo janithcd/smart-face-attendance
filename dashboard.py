@@ -21,7 +21,9 @@ from attendance_db import (
 BASE_DIR = Path(__file__).resolve().parent
 
 FACES_DIR = BASE_DIR / "data" / "faces"
-
+PEOPLE_MANAGER_SCRIPT = (
+        BASE_DIR / "people_manager.py"
+)
 REGISTER_SCRIPT = BASE_DIR / "register_face.py"
 BUILD_DATABASE_SCRIPT = BASE_DIR / "build_sface_embeddings.py"
 ATTENDANCE_SCRIPT = BASE_DIR / "verify_identity.py"
