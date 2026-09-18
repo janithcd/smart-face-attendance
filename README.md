@@ -1,271 +1,818 @@
 # Smart Face Attendance
 
-A Python-based smart attendance system that uses **face recognition and liveness verification** to identify registered users and help prevent attendance spoofing using static photos.
+A modular biometric attendance platform built with **Python, computer vision, FastAPI, React, and TypeScript**.
 
-The project combines modern computer vision models with real-time webcam processing and is being developed step by step as a practical AI/computer-vision portfolio project.
+The project started as a Python face-recognition experiment and is evolving into a production-style biometric attendance service that can operate independently or integrate with larger systems such as:
+
+* Employee Management Systems
+* HR Management Systems
+* Gym Management Systems
+* Student Management Systems
+* Access Control Systems
+* Workplace attendance kiosks
+
+The project is also being developed as a practical learning platform for:
+
+* Software Engineering
+* Computer Vision
+* Full-Stack Development
+* API Design
+* System Architecture
+* Security
+* DevOps
+* Docker
+* CI/CD
+* AWS Cloud Architecture
 
 ---
 
-## Project Overview
+# Project Vision
 
-Traditional attendance systems can be slow, manual, or easy to manipulate.
+The long-term goal is not simply to build a face-recognition application.
 
-Smart Face Attendance aims to provide an automated workflow:
+The goal is to build a reusable **Biometric Attendance Platform**.
 
 ```text
-Webcam
-   ↓
-Face Detection
-   ↓
-Face Recognition
-   ↓
-Identity Verification
-   ↓
-Liveness Check
-   ↓
-Attendance Recording
+Employee / HR Management System
+              │
+              │ REST API / Events
+              ▼
+┌───────────────────────────────────┐
+│   Smart Face Attendance Platform  │
+│                                   │
+│   React + TypeScript              │
+│            │                      │
+│            ▼                      │
+│        FastAPI API                │
+│            │                      │
+│     ┌──────┼────────┐             │
+│     ▼      ▼        ▼             │
+│ Attendance Biometrics Integrations│
+│     │      │        │             │
+│     └──────┼────────┘             │
+│            ▼                      │
+│         Database                  │
+└───────────────────────────────────┘
 ```
 
-Before attendance is accepted, the system verifies both:
-
-* Who the person is
-* Whether a real person is currently in front of the camera
+Face recognition is treated as one capability inside the overall attendance system rather than the entire application.
 
 ---
 
-## Current Features
+# Current System
 
-* Real-time webcam capture
-* Face detection
-* Person registration
-* Automatic face image dataset collection
-* YuNet DNN face detection
-* SFace deep face embeddings
-* Face recognition using cosine similarity
-* Multiple-frame identity confirmation
-* Unknown-person rejection
-* MediaPipe Face Landmarker integration
-* Blink detection
-* Head-turn detection
-* Return-to-center verification
-* Basic static-photo spoof prevention
-* Identity lock during liveness verification
-* Multiple-person detection protection
+The current application can:
+
+* Register a person
+* Capture facial training images
+* Detect faces in real time
+* Generate SFace embeddings
+* Recognize registered users
+* Reject unknown users using similarity thresholds
+* Require stable identity recognition across multiple frames
+* Perform liveness verification
+* Detect eye blinks
+* Detect head movement
+* Require the user to return to the center position
+* Reduce basic static-photo spoofing
+* Record attendance in SQLite
+* Prevent duplicate attendance on the same day
+* View today's attendance
+* Export attendance as CSV
+* Manage registered people
+* Run through a Tkinter desktop interface
+* Expose attendance information through FastAPI
+* Display live attendance information using React + TypeScript
 
 ---
 
-## Recognition and Liveness Flow
+# Biometric Verification Pipeline
 
-The current verification pipeline works like this:
+The current verification process is:
 
 ```text
 Camera
-   ↓
-YuNet Face Detector
-   ↓
-SFace Recognition
-   ↓
-Same identity detected
-for multiple frames
-   ↓
-Identity Locked
-   ↓
-Face Landmarker
-   ↓
-Look Straight
-   ↓
-Blink
-   ↓
-Turn Head
-   ↓
-Return to Center
-   ↓
-IDENTITY + LIVENESS VERIFIED
-```
-
-A static photograph may still be recognized as the correct person by SFace because the photograph genuinely contains that person's face.
-
-However, the liveness stage should prevent a static image from completing the required actions.
-
-Example:
-
-```text
-Photo of Janith
-      ↓
-Identity: PASS
-      ↓
-Blink challenge: FAIL
-      ↓
-Verification rejected
+  │
+  ▼
+YuNet Face Detection
+  │
+  ▼
+SFace Face Embedding
+  │
+  ▼
+Cosine Similarity Matching
+  │
+  ▼
+Stable Identity Verification
+  │
+  ▼
+MediaPipe Face Landmarker
+  │
+  ├── Blink Detection
+  ├── Head Turn Detection
+  └── Return-to-Center Detection
+  │
+  ▼
+Identity + Liveness Verified
+  │
+  ▼
+Attendance Recorded
 ```
 
 ---
 
-## Technologies Used
+# Anti-Spoofing
+
+Face recognition alone cannot determine whether the camera is seeing a live person.
+
+For example, SFace may correctly recognize a photograph containing a registered person's face.
+
+The system therefore performs an additional liveness challenge.
+
+```text
+Static photograph
+      │
+      ▼
+Identity recognition may PASS
+      │
+      ▼
+Blink challenge
+      │
+      ▼
+FAIL
+      │
+      ▼
+Attendance rejected
+```
+
+A real user must currently:
+
+1. Look directly at the camera
+2. Blink when requested
+3. Turn their head
+4. Return their face to the center position
+
+This is a basic challenge-response liveness system.
+
+It is intended for learning and practical attendance use cases and should not be considered equivalent to high-security biometric anti-spoofing systems used by banks or government identity platforms.
+
+---
+
+# Technology Stack
+
+## Computer Vision
 
 * Python
 * OpenCV
 * OpenCV Contrib
-* NumPy
 * YuNet
 * SFace
-* MediaPipe Tasks
-* TensorFlow Lite runtime used internally by MediaPipe
+* MediaPipe Face Landmarker
+* NumPy
 
-Future versions will also use:
+## Backend
 
+Current:
+
+* FastAPI
+* Python
 * SQLite
-* Attendance database
-* Admin interface
-* CSV reporting
+
+Planned:
+
+* SQLAlchemy
+* Alembic
+* PostgreSQL
+* Authentication and authorization
+* API versioning
+* Integration APIs
+* Audit logging
+
+## Frontend
+
+Current:
+
+* React
+* TypeScript
+* Vite
+
+Planned frontend foundation:
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* shadcn/ui
+* TanStack Query
+* React Router
+* React Hook Form
+* Zod
+* Lucide Icons
+
+The new frontend will support:
+
+* Light theme
+* Dark theme
+* System theme
+* Responsive layouts
+* Reusable UI components
+* Accessible dialogs and forms
+* Loading skeletons
+* Error states
+* Empty states
+* Toast notifications
+* Search and filtering
+* Modern tables and dashboards
 
 ---
 
-## AI / Computer Vision Models
+# Application Architecture
 
-The project currently uses three model files.
+The project is currently transitioning from a script-oriented structure into a modular full-stack architecture.
 
-```text
-models/
-├── face_detection_yunet_2023mar.onnx
-├── face_recognition_sface_2021dec.onnx
-└── face_landmarker.task
-```
-
-### YuNet
-
-Used for real-time face detection and facial landmarks required by the SFace pipeline.
-
-### SFace
-
-Used to generate numerical face embeddings and compare registered users with faces detected through the webcam.
-
-Higher cosine similarity generally means the faces are more similar.
-
-### MediaPipe Face Landmarker
-
-Used for liveness verification, including:
-
-* Eye blink detection
-* Facial landmarks
-* Head movement detection
-
----
-
-## Project Structure
+Target architecture:
 
 ```text
 smart-face-attendance/
 │
+├── backend/
+│   └── app/
+│       ├── main.py
+│       │
+│       ├── api/
+│       │   └── v1/
+│       │       ├── router.py
+│       │       ├── attendance.py
+│       │       ├── people.py
+│       │       ├── biometrics.py
+│       │       └── system.py
+│       │
+│       ├── core/
+│       │   ├── config.py
+│       │   └── security.py
+│       │
+│       ├── models/
+│       ├── schemas/
+│       ├── repositories/
+│       ├── services/
+│       │   ├── attendance_service.py
+│       │   ├── biometric_service.py
+│       │   └── recognition_service.py
+│       │
+│       └── db/
+│
+├── frontend/
+│   └── src/
+│       ├── app/
+│       ├── components/
+│       │   ├── layout/
+│       │   └── ui/
+│       │
+│       ├── features/
+│       │   ├── dashboard/
+│       │   ├── attendance/
+│       │   ├── people/
+│       │   ├── reports/
+│       │   └── settings/
+│       │
+│       ├── hooks/
+│       ├── lib/
+│       ├── routes/
+│       ├── services/
+│       └── types/
+│
 ├── data/
+├── models/
+└── ...
+```
+
+---
+
+# Backend Architecture
+
+The backend will follow a layered architecture.
+
+```text
+API Route
+   │
+   ▼
+Service Layer
+   │
+   ▼
+Repository Layer
+   │
+   ▼
+Database
+```
+
+This keeps:
+
+* HTTP logic
+* business logic
+* database logic
+* biometric processing
+
+separated from one another.
+
+This approach makes the system easier to:
+
+* test
+* maintain
+* integrate
+* deploy
+* scale
+* extend
+
+---
+
+# API Design
+
+The API is being designed so external systems can integrate with the attendance service.
+
+API versioning will follow:
+
+```text
+/api/v1/
+```
+
+Example endpoints:
+
+```text
+GET    /api/v1/dashboard
+
+GET    /api/v1/people
+POST   /api/v1/people
+DELETE /api/v1/people/{id}
+
+GET    /api/v1/attendance
+GET    /api/v1/attendance/today
+
+POST   /api/v1/biometrics/enroll
+POST   /api/v1/biometrics/verify
+```
+
+Versioning allows future API changes without immediately breaking systems already integrated with the platform.
+
+---
+
+# External System Integration
+
+The biometric platform is designed to eventually work with other systems.
+
+For example:
+
+```text
+Employee Management System
+         │
+         ▼
+Employee EMP-00482
+         │
+         ▼
+Smart Face Attendance API
+         │
+         ▼
+Biometric Profile
+         │
+         ▼
+Attendance Event
+         │
+         ▼
+EMP-00482
+```
+
+A biometric profile should not depend directly on a specific employee database.
+
+Instead, the architecture can use references such as:
+
+```text
+subject_id
+subject_type
+external_reference
+```
+
+Example:
+
+```text
+subject_id         = EMP-00482
+subject_type       = employee
+external_reference = HRMS-00482
+```
+
+This allows the same biometric platform to work with employees, students, members, or other user types.
+
+---
+
+# Future Event-Driven Architecture
+
+A later version may publish attendance events.
+
+```text
+Face Verified
+     │
+     ▼
+AttendanceRecorded
+     │
+     ▼
+Event System
+     │
+     ├── Employee Management
+     ├── Payroll
+     ├── Notifications
+     └── Analytics
+```
+
+This can later be implemented using AWS services such as:
+
+* Amazon EventBridge
+* Amazon SNS
+* Amazon SQS
+
+---
+
+# Database Strategy
+
+## Current
+
+SQLite is currently used because it is:
+
+* lightweight
+* simple
+* local
+* easy to develop with
+
+Current attendance data includes:
+
+```text
+Person ID
+Person Name
+Attendance Date
+Attendance Time
+Verification Method
+Created Timestamp
+```
+
+Duplicate attendance for the same user on the same day is prevented.
+
+## Planned
+
+The cloud-ready architecture will migrate to:
+
+```text
+PostgreSQL
++
+SQLAlchemy
++
+Alembic
+```
+
+Possible future tables:
+
+```text
+organizations
+users
+subjects
+biometric_profiles
+biometric_embeddings
+attendance_events
+devices
+audit_logs
+integration_clients
+```
+
+---
+
+# Frontend Vision
+
+The React interface is being designed as a modern responsive management application.
+
+Main navigation:
+
+```text
+Dashboard
+Attendance
+People
+Devices
+Reports
+Integrations
+Settings
+```
+
+Example dashboard:
+
+```text
+┌──────────────┬───────────────────────────────────────────────┐
+│              │ Smart Attendance                Theme  Admin │
+│              ├───────────────────────────────────────────────┤
+│ Dashboard    │                                               │
+│ Attendance   │ Registered   Present   Absent   System        │
+│ People       │    124         108       16     Online       │
+│ Devices      │                                               │
+│ Reports      │ Attendance Overview                           │
+│ Integrations │                                               │
+│ Settings     │ Recent Attendance                             │
+│              │                                               │
+│              │ Janith      08:42      Verified              │
+│              │ Kasun       08:45      Verified              │
+└──────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+# Theme System
+
+The new frontend will support:
+
+```text
+Light
+Dark
+System
+```
+
+User theme preferences will be remembered locally.
+
+The goal is to provide a professional interface suitable for:
+
+* administration
+* HR departments
+* reception desks
+* biometric kiosks
+* desktop systems
+* tablets
+
+---
+
+# Edge + Cloud Architecture
+
+An important architectural consideration is webcam access.
+
+A cloud server cannot directly access a webcam connected to an employee's local computer.
+
+Therefore, the long-term architecture will separate local biometric processing from cloud business services.
+
+```text
+┌──────────── Local Device / Kiosk ─────────────┐
+│                                               │
+│ Camera                                        │
+│   │                                           │
+│   ▼                                           │
+│ Face Detection                                │
+│ Liveness Verification                         │
+│ Biometric Verification                        │
+│   │                                           │
+└───┼───────────────────────────────────────────┘
+    │ HTTPS
+    ▼
+Cloud API
+    │
+    ▼
+Attendance Platform
+    │
+    ▼
+Database
+```
+
+Possible edge devices include:
+
+* Reception computers
+* Attendance kiosks
+* Tablets
+* Raspberry Pi devices
+* Dedicated employee terminals
+
+---
+
+# AWS Learning Roadmap
+
+A major goal of this project is gaining practical AWS experience.
+
+Possible target architecture:
+
+```text
+Users
+  │
+  ▼
+CloudFront
+  │
+  ▼
+React Frontend
+  │
+  ▼
+API / Load Balancer
+  │
+  ▼
+FastAPI Containers
+  │
+  ├───────────────┐
+  ▼               ▼
+RDS PostgreSQL    S3
+```
+
+Planned AWS technologies may include:
+
+* Amazon CloudFront
+* Amazon S3
+* AWS Amplify Hosting
+* Amazon ECS
+* AWS Fargate
+* Amazon ECR
+* Amazon RDS for PostgreSQL
+* Amazon Cognito
+* AWS Secrets Manager
+* AWS KMS
+* Amazon CloudWatch
+* Amazon Route 53
+* AWS Certificate Manager
+* Amazon EventBridge
+* Amazon SNS
+* Amazon SQS
+
+---
+
+# Containerization and DevOps
+
+Future infrastructure stages will introduce:
+
+```text
+Docker
+Docker Compose
+GitHub Actions
+CI/CD
+AWS ECR
+AWS ECS Fargate
+Infrastructure as Code
+```
+
+Infrastructure as Code may later use:
+
+* AWS CDK
+* Terraform
+
+---
+
+# Authentication and Security
+
+Because biometric information is sensitive, security is an important part of the future architecture.
+
+Planned security features include:
+
+* HTTPS
+* JWT authentication
+* Role-based access control
+* Audit logging
+* Encryption
+* Input validation
+* CORS restrictions
+* Rate limiting
+* Secure API integrations
+* Secret management
+* Encrypted biometric data
+
+Potential roles:
+
+```text
+SUPER_ADMIN
+HR_ADMIN
+MANAGER
+ATTENDANCE_OPERATOR
+VIEWER
+DEVICE
+```
+
+Biometric embeddings should not be treated like ordinary profile images.
+
+---
+
+# Current Project Structure
+
+The project currently contains a mixture of the original Python prototype and the new full-stack architecture.
+
+```text
+smart-face-attendance/
+│
+├── backend/
+│   └── main.py
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── ...
+│
+├── data/
+│   ├── attendance.db
 │   ├── faces/
-│   │   └── 001_Janith_Dasanayaka/
-│   │       ├── face_001.jpg
-│   │       ├── face_002.jpg
-│   │       └── ...
-│   │
 │   └── models/
-│       └── sface_database.npz
 │
 ├── models/
 │   ├── face_detection_yunet_2023mar.onnx
 │   ├── face_recognition_sface_2021dec.onnx
 │   └── face_landmarker.task
 │
-├── main.py
+├── attendance_db.py
 ├── register_face.py
-├── train_model.py
-├── recognize_face.py
 ├── build_sface_embeddings.py
 ├── recognize_sface.py
-├── test_landmarker.py
 ├── liveness_test.py
 ├── verify_identity.py
+├── dashboard.py
+├── people_manager.py
+│
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
-Some earlier LBPH files are currently retained because they show how the project evolved from basic recognition to a more advanced deep-learning-based solution.
+The older Tkinter application is currently retained while the React application reaches feature parity.
 
 ---
 
-# Installation
+# Running the Python Environment
 
-## 1. Clone the repository
-
-```bash
-git clone https://github.com/janithcd/smart-face-attendance.git
-```
-
-Enter the project directory:
+Create the virtual environment:
 
 ```bash
-cd smart-face-attendance
-```
-
----
-
-## 2. Create a Python virtual environment
-
-On Windows:
-
-```powershell
 py -m venv .venv
 ```
 
-Activate it:
+Activate it on Windows:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Your terminal should look similar to:
-
-```text
-(.venv) PS C:\Users\User\Desktop\smart-face-attendance>
-```
-
----
-
-## 3. Install dependencies
+Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-The project currently uses packages including:
+---
+
+# Running FastAPI
+
+From the project root:
+
+```bash
+fastapi dev backend/main.py
+```
+
+Development API:
 
 ```text
-opencv-contrib-python
-numpy
-mediapipe
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
 ```
 
 ---
 
-# Required Model Files
+# Running React
 
-AI model files are intentionally excluded from the Git repository.
+Open another terminal:
 
-Download and place the following files inside the `models` directory.
-
-```text
-models/
-├── face_detection_yunet_2023mar.onnx
-├── face_recognition_sface_2021dec.onnx
-└── face_landmarker.task
+```bash
+cd frontend
 ```
 
-The YuNet and SFace models are available from the official OpenCV Zoo.
+Install dependencies:
 
-The Face Landmarker model is available from Google's MediaPipe model resources.
+```bash
+npm install
+```
+
+Start Vite:
+
+```bash
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+The current communication flow is:
+
+```text
+React
+   │
+   ▼
+FastAPI
+   │
+   ▼
+Python Services
+   │
+   ▼
+SQLite
+```
 
 ---
 
-# Usage
-
-## 1. Register a Person
+# Registering a Person
 
 Run:
 
@@ -276,61 +823,33 @@ python register_face.py
 Example:
 
 ```text
-Enter Person ID: 001
-Enter Person Name: Janith Dasanayaka
+Person ID: 001
+Name: Janith Dasanayaka
 ```
 
-The webcam will open and automatically collect multiple face images.
-
-The dataset will be stored locally:
+Captured face images are stored locally under:
 
 ```text
-data/faces/001_Janith_Dasanayaka/
+data/faces/
 ```
 
-Example:
-
-```text
-face_001.jpg
-face_002.jpg
-face_003.jpg
-...
-face_030.jpg
-```
-
-Move your head slightly while capturing the dataset to provide some variation.
+Biometric face datasets are excluded from Git.
 
 ---
 
-## 2. Build the SFace Database
+# Building Face Embeddings
 
-After registering users, run:
+After registration:
 
 ```bash
 python build_sface_embeddings.py
 ```
 
-The application processes registered face images and generates SFace embeddings.
-
-Example output:
-
-```text
-Processing: Janith Dasanayaka
-Valid images: 28/30
-
-SFace database created successfully!
-Registered people: 1
-```
-
-The generated database is stored at:
-
-```text
-data/models/sface_database.npz
-```
+This generates the local SFace biometric database.
 
 ---
 
-## 3. Test Face Recognition
+# Testing Recognition
 
 Run:
 
@@ -338,26 +857,19 @@ Run:
 python recognize_sface.py
 ```
 
-A recognized person should appear similar to:
+The application displays:
 
 ```text
-Janith Dasanayaka
-ID: 001
-Similarity: 0.72
+Name
+Person ID
+Similarity
 ```
 
-An unrecognized person should appear as:
-
-```text
-Unknown Person
-Similarity: 0.24
-```
-
-The current recognition threshold can be adjusted depending on camera quality, lighting conditions, and testing results.
+Unknown users are rejected if their similarity does not meet the configured threshold.
 
 ---
 
-## 4. Test Liveness Detection
+# Testing Liveness
 
 Run:
 
@@ -365,25 +877,23 @@ Run:
 python liveness_test.py
 ```
 
-The liveness sequence is:
+Current challenge:
 
 ```text
-LOOK STRAIGHT AT CAMERA
-        ↓
-BLINK ONCE
-        ↓
-TURN HEAD LEFT OR RIGHT
-        ↓
-RETURN FACE TO CENTER
-        ↓
-LIVENESS PASSED
+Look Straight
+    ↓
+Blink
+    ↓
+Turn Head
+    ↓
+Return to Center
+    ↓
+Liveness Passed
 ```
-
-This stage uses MediaPipe facial landmarks and blendshapes.
 
 ---
 
-## 5. Run Identity + Liveness Verification
+# Complete Verification
 
 Run:
 
@@ -391,183 +901,228 @@ Run:
 python verify_identity.py
 ```
 
-The full verification pipeline performs:
+Successful verification performs:
 
 ```text
 Face Detection
       ↓
-Face Recognition
+SFace Recognition
       ↓
-Identity Stable for Multiple Frames
-      ↓
-Identity Locked
+Stable Identity
       ↓
 Liveness Verification
       ↓
-Verification Passed
-```
-
-Successful verification produces output similar to:
-
-```text
-==================================================
-IDENTITY + LIVENESS VERIFIED!
-Person: Janith Dasanayaka
-ID: 001
-==================================================
-```
-
-Controls:
-
-```text
-Q = Quit
-R = Reset Verification
+Attendance Recording
 ```
 
 ---
 
-# Anti-Spoofing Behaviour
+# Privacy
 
-One of the major goals of the project is reducing attendance spoofing.
+Sensitive local files are intentionally excluded from Git.
 
-### Real Person
+Examples:
 
-```text
-Identity Recognition ✓
-Blink ✓
-Head Turn ✓
-Return to Center ✓
+```gitignore
+data/faces/
+data/models/
+data/*.db
 
-VERIFICATION PASSED
+models/*.onnx
+models/*.task
+
+.venv/
+frontend/node_modules/
 ```
 
-### Static Photograph
+The public repository should not contain:
 
-```text
-Identity Recognition may pass
-Blink ✗
-
-VERIFICATION FAILED
-```
-
-### Unknown Person
-
-```text
-Face detected
-Identity does not meet similarity threshold
-
-UNKNOWN PERSON
-```
-
-This is currently a **basic challenge-response liveness system** and should not be considered equivalent to production-grade biometric security systems used by banks or government identity platforms.
+* Registered users' face images
+* Generated biometric embeddings
+* Local attendance databases
+* Secrets
+* Environment variables
 
 ---
 
-# Privacy and Security
+# Development Roadmap
 
-Face datasets and generated biometric representations are intentionally excluded from Git.
+## Phase 1 — Computer Vision
 
-```
-
-This prevents registered face images and generated biometric embeddings from being uploaded to the public GitHub repository.
-
----
-
-# Project Development Progress
-
-## Phase 1 — Environment and Camera
-
-* [x] Python environment
-* [x] Virtual environment
-* [x] OpenCV installation
 * [x] Webcam integration
-
-## Phase 2 — Face Detection
-
-* [x] Haar Cascade face detection
-* [x] Real-time face bounding boxes
-
-## Phase 3 — Registration
-
-* [x] Person ID input
-* [x] Person name input
-* [x] Automatic dataset folder creation
-* [x] Face image collection
-
-## Phase 4 — Recognition
-
-* [x] Basic LBPH recognition
-* [x] Identify limitations of LBPH
-* [x] Upgrade to YuNet
-* [x] Upgrade to SFace
-* [x] Generate deep face embeddings
-* [x] Cosine similarity matching
+* [x] Haar face detection
+* [x] Face dataset collection
+* [x] LBPH prototype
+* [x] Identify LBPH limitations
+* [x] YuNet integration
+* [x] SFace integration
+* [x] Deep facial embeddings
 * [x] Unknown-person detection
-* [x] Multi-frame identity confirmation
 
-## Phase 5 — Liveness
+## Phase 2 — Liveness
 
 * [x] MediaPipe Face Landmarker
-* [x] Eye blink detection
+* [x] Blink detection
 * [x] Head-turn detection
 * [x] Return-to-center detection
-* [x] Basic static-photo spoof prevention
-* [x] Combine identity and liveness verification
+* [x] Static-photo challenge-response protection
+* [x] Combined recognition + liveness verification
 
-## Phase 6 — Attendance System
+## Phase 3 — Attendance
 
-* [ ] SQLite database
-* [ ] Automatically record attendance
-* [ ] Date and time recording
-* [ ] Prevent duplicate attendance
+* [x] SQLite attendance database
+* [x] Attendance recording
+* [x] Duplicate prevention
+* [x] Today's attendance
+* [x] CSV export
+
+## Phase 4 — Desktop Prototype
+
+* [x] Tkinter admin dashboard
+* [x] Registered people manager
+* [x] Attendance controls
+* [x] CSV export interface
+
+## Phase 5 — Full-Stack Migration
+
+* [x] FastAPI foundation
+* [x] React
+* [x] TypeScript
+* [x] Vite
+* [x] React-to-FastAPI communication
+
+## Phase 6 — Modern Frontend
+
+* [ ] Tailwind CSS
+* [ ] shadcn/ui
+* [ ] Dark / light / system theme
+* [ ] React Router
+* [ ] TanStack Query
+* [ ] Zod validation
+* [ ] Modern application shell
+* [ ] Responsive dashboard
+* [ ] People management
 * [ ] Attendance history
+* [ ] Reports
+* [ ] Settings
 
-## Phase 7 — Application Interface
+## Phase 7 — Backend Engineering
 
-* [ ] Admin dashboard
-* [ ] Person management
-* [ ] Attendance viewer
-* [ ] Search and filtering
-* [ ] CSV export
-* [ ] Improved user interface
+* [ ] `/api/v1` architecture
+* [ ] Service layer
+* [ ] Repository layer
+* [ ] Pydantic schemas
+* [ ] Central configuration
+* [ ] Structured logging
+* [ ] Error handling
+* [ ] API documentation
+
+## Phase 8 — Database Engineering
+
+* [ ] SQLAlchemy
+* [ ] Alembic
+* [ ] PostgreSQL
+* [ ] Database migrations
+* [ ] Audit records
+
+## Phase 9 — Security
+
+* [ ] Authentication
+* [ ] JWT
+* [ ] RBAC
+* [ ] Audit logging
+* [ ] Secure biometric storage
+* [ ] Integration credentials
+* [ ] Rate limiting
+
+## Phase 10 — Integration Platform
+
+* [ ] External subject IDs
+* [ ] Employee system integration
+* [ ] API clients
+* [ ] Webhooks
+* [ ] Event-driven attendance
+
+## Phase 11 — Testing
+
+* [ ] pytest
+* [ ] API tests
+* [ ] Vitest
+* [ ] React Testing Library
+* [ ] Playwright end-to-end testing
+
+## Phase 12 — DevOps
+
+* [ ] Docker
+* [ ] Docker Compose
+* [ ] GitHub Actions
+* [ ] Automated tests
+* [ ] CI/CD
+
+## Phase 13 — AWS
+
+* [ ] Frontend deployment
+* [ ] Container registry
+* [ ] ECS Fargate
+* [ ] PostgreSQL on RDS
+* [ ] Cognito authentication
+* [ ] CloudWatch monitoring
+* [ ] Secrets Manager
+* [ ] HTTPS
+* [ ] Domain configuration
+
+## Phase 14 — Infrastructure as Code
+
+* [ ] AWS CDK or Terraform
+* [ ] Reproducible environments
+* [ ] Development environment
+* [ ] Production environment
 
 ---
 
-# Current Development Status
+# Current Development Focus
 
-The computer-vision verification layer is currently functional.
-
-The system can:
+The current milestone is:
 
 ```text
-Register Person
-      ↓
-Build Face Embedding
-      ↓
-Recognize Person
-      ↓
-Perform Liveness Challenge
-      ↓
-Verify Identity
+Frontend Architecture & Design System
 ```
 
-The next major development stage is:
+The next implementation stage will introduce:
 
 ```text
-SQLite Attendance Database
+Tailwind CSS
++
+shadcn/ui
++
+React Router
++
+TanStack Query
++
+Dark / Light / System Theme
++
+Modern Responsive Application Shell
 ```
 
-Successful identity + liveness verification will automatically record:
+After that, the existing basic React page will be replaced by the new production-style dashboard.
 
-```text
-Person ID
-Name
-Date
-Time
-Attendance Status
-```
+---
 
-while preventing duplicate attendance records for the same person on the same day.
+# Engineering Goals
+
+This project prioritizes:
+
+* Modularity
+* Separation of concerns
+* Maintainability
+* Security
+* Scalability
+* Testability
+* API-first design
+* Integration readiness
+* Cloud readiness
+* User-friendly UX
+* Modern development practices
 
 ---
 
@@ -575,12 +1130,14 @@ while preventing duplicate attendance records for the same person on the same da
 
 **Janith Dasanayaka**
 
-Software Engineering student and aspiring Full-Stack / Software Developer.
+Software Engineering Student
+Full-Stack Developer
+Cloud & AI Learner
 
 ---
 
-## Repository
+# Repository
 
-Smart Face Attendance
+**Smart Face Attendance**
 
 `janithcd/smart-face-attendance`
