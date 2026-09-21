@@ -17,11 +17,14 @@ type ThemeProviderProps = {
 }
 
 
+const SYSTEM_THEME_QUERY =
+    "(prefers-color-scheme: dark)"
+
+
 export function ThemeProvider({
                                   children,
                                   defaultTheme = "system",
-                                  storageKey =
-                                  "smart-attendance-theme",
+                                  storageKey = "smart-attendance-theme",
                               }: ThemeProviderProps) {
 
     const [
@@ -34,10 +37,7 @@ export function ThemeProvider({
                 storageKey
             ) as Theme | null
 
-        return (
-            storedTheme ??
-            defaultTheme
-        )
+        return storedTheme ?? defaultTheme
     })
 
 
@@ -46,32 +46,54 @@ export function ThemeProvider({
         const root =
             window.document.documentElement
 
-        root.classList.remove(
-            "light",
-            "dark"
-        )
-
-
-        if (theme === "system") {
-
-            const systemTheme =
-                window.matchMedia(
-                    "(prefers-color-scheme: dark)"
-                ).matches
-                    ? "dark"
-                    : "light"
-
-            root.classList.add(
-                systemTheme
+        const mediaQuery =
+            window.matchMedia(
+                SYSTEM_THEME_QUERY
             )
 
+
+        const applyTheme = () => {
+
+            root.classList.remove(
+                "light",
+                "dark"
+            )
+
+            const resolvedTheme =
+                theme === "system"
+                    ? mediaQuery.matches
+                        ? "dark"
+                        : "light"
+                    : theme
+
+            root.classList.add(
+                resolvedTheme
+            )
+        }
+
+
+        applyTheme()
+
+
+        if (theme !== "system") {
             return
         }
 
 
-        root.classList.add(
-            theme
+        mediaQuery.addEventListener(
+            "change",
+            applyTheme
         )
+
+
+        return () => {
+
+            mediaQuery.removeEventListener(
+                "change",
+                applyTheme
+            )
+
+        }
 
     }, [theme])
 

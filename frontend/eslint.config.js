@@ -1,7 +1,11 @@
 import js from "@eslint/js"
 import globals from "globals"
+
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
+
+import pluginQuery from "@tanstack/eslint-plugin-query"
+
 import tseslint from "typescript-eslint"
 
 import {
@@ -9,11 +13,16 @@ import {
   globalIgnores,
 } from "eslint/config"
 
+
 export default defineConfig([
 
   globalIgnores([
     "dist",
   ]),
+
+  ...pluginQuery.configs[
+      "flat/recommended"
+      ],
 
   {
     files: [
@@ -34,9 +43,9 @@ export default defineConfig([
   },
 
 
-  // shadcn/ui components intentionally export
-  // helpers such as variants and hooks alongside
-  // React components.
+  // shadcn/ui generated components
+  // intentionally export helpers together
+  // with React components.
   {
     files: [
       "src/components/ui/**/*.{ts,tsx}",
