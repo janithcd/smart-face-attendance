@@ -2,49 +2,101 @@ import {
     createBrowserRouter,
 } from "react-router"
 
-import App from "@/App"
+import {
+    AppLayout,
+} from "@/app/app-layout"
+
+import {
+    RouteErrorPage,
+} from "@/app/route-error-page"
 
 
 export const router =
     createBrowserRouter([
+
         {
             path: "/",
-            element: <App />,
+
+            element: (
+                <AppLayout />
+            ),
+
+            errorElement: (
+                <RouteErrorPage />
+            ),
+
+            children: [
+
+                {
+                    index: true,
+
+                    lazy: () =>
+                        import(
+                            "@/features/dashboard/pages/dashboard-page"
+                            ),
+                },
+
+
+                {
+                    path: "attendance",
+
+                    lazy: () =>
+                        import(
+                            "@/features/attendance/pages/attendance-page"
+                            ),
+                },
+
+
+                {
+                    path: "people",
+
+                    lazy: () =>
+                        import(
+                            "@/features/people/pages/people-page"
+                            ),
+                },
+
+
+                {
+                    path: "devices",
+
+                    lazy: () =>
+                        import(
+                            "@/features/devices/pages/devices-page"
+                            ),
+                },
+
+
+                {
+                    path: "reports",
+
+                    lazy: () =>
+                        import(
+                            "@/features/reports/pages/reports-page"
+                            ),
+                },
+
+
+                {
+                    path: "integrations",
+
+                    lazy: () =>
+                        import(
+                            "@/features/integrations/pages/integrations-page"
+                            ),
+                },
+
+
+                {
+                    path: "settings",
+
+                    lazy: () =>
+                        import(
+                            "@/features/settings/pages/settings-page"
+                            ),
+                },
+
+            ],
         },
 
-        {
-            path: "/attendance",
-            element: (
-                <div>
-                    Attendance
-                </div>
-            ),
-        },
-
-        {
-            path: "/people",
-            element: (
-                <div>
-                    People
-                </div>
-            ),
-        },
-
-        {
-            path: "/reports",
-            element: (
-                <div>
-                    Reports
-                </div>
-            ),
-        },
-
-        {
-            path: "/settings",
-            element: (
-                <div>
-                    Settings
-                </div>
-            ),
-        },
     ])
