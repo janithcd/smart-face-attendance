@@ -1,220 +1,127 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import {
+  Activity,
+} from "lucide-react"
 
+import {
+  ModeToggle,
+} from "@/components/mode-toggle"
 
-type Attendance = {
-  id: number;
-  person_id: string;
-  person_name: string;
-  date: string;
-  time: string;
-  verification_method: string;
-};
-
-
-type DashboardData = {
-  registered_people: number;
-  today_attendance: number;
-  system_status: string;
-  attendance: Attendance[];
-};
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 
 function App() {
 
-  const [data, setData] =
-      useState<DashboardData | null>(null);
-
-  const [loading, setLoading] =
-      useState(true);
-
-  const [error, setError] =
-      useState("");
-
-
-  async function loadDashboard() {
-
-    try {
-
-      setError("");
-
-      const response = await fetch(
-          "http://127.0.0.1:8000/api/dashboard"
-      );
-
-      if (!response.ok) {
-        throw new Error(
-            "Could not load dashboard"
-        );
-      }
-
-      const result =
-          await response.json();
-
-      setData(result);
-
-    } catch (err) {
-
-      setError(
-          err instanceof Error
-              ? err.message
-              : "Unknown error"
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
-
-
-  useEffect(() => {
-
-    loadDashboard();
-
-    const interval = setInterval(
-        loadDashboard,
-        5000
-    );
-
-    return () =>
-        clearInterval(interval);
-
-  }, []);
-
-
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
-
-
-  if (error) {
-
-    return (
-        <div>
-          <h2>Backend connection failed</h2>
-          <p>{error}</p>
-        </div>
-    );
-
-  }
-
-
-  if (!data) {
-    return null;
-  }
-
-
   return (
-      <main>
 
-        <h1>
-          Smart Face Attendance
-        </h1>
+      <div
+          className="
+        min-h-screen
+        bg-background
+        text-foreground
+      "
+      >
 
-        <p>
-          SFace Recognition + MediaPipe
-          Liveness Verification
-        </p>
+        <header
+            className="
+          flex
+          items-center
+          justify-between
+          border-b
+          px-6
+          py-4
+        "
+        >
 
+          <div
+              className="
+            flex
+            items-center
+            gap-3
+          "
+          >
 
-        <section>
+            <Activity
+                className="
+              h-6
+              w-6
+              text-primary
+            "
+            />
 
-          <div>
-            <h2>
-              {data.registered_people}
-            </h2>
+            <div>
 
-            <p>
-              Registered People
-            </p>
+              <h1
+                  className="
+                font-semibold
+              "
+              >
+                Smart Attendance
+              </h1>
+
+              <p
+                  className="
+                text-sm
+                text-muted-foreground
+              "
+              >
+                Biometric Attendance Platform
+              </p>
+
+            </div>
+
           </div>
 
+          <ModeToggle />
 
-          <div>
-            <h2>
-              {data.today_attendance}
-            </h2>
-
-            <p>
-              Today's Attendance
-            </p>
-          </div>
+        </header>
 
 
-          <div>
-            <h2>
-              {data.system_status}
-            </h2>
+        <main
+            className="
+          mx-auto
+          max-w-7xl
+          p-6
+        "
+        >
 
-            <p>
-              System Status
-            </p>
-          </div>
+          <Card>
 
-        </section>
+            <CardHeader>
 
+              <CardTitle>
+                Frontend Foundation Ready
+              </CardTitle>
 
-        <h2>
-          Today's Attendance
-        </h2>
+              <CardDescription>
+                React + TypeScript +
+                Tailwind + shadcn/ui
+              </CardDescription>
 
+            </CardHeader>
 
-        <table>
+            <CardContent>
 
-          <thead>
+              <p>
+                Our new application architecture
+                is ready for the production
+                dashboard.
+              </p>
 
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Verification</th>
-          </tr>
+            </CardContent>
 
-          </thead>
+          </Card>
 
+        </main>
 
-          <tbody>
-
-          {data.attendance.map(
-              (record) => (
-
-                  <tr key={record.id}>
-
-                    <td>
-                      {record.person_id}
-                    </td>
-
-                    <td>
-                      {record.person_name}
-                    </td>
-
-                    <td>
-                      {record.date}
-                    </td>
-
-                    <td>
-                      {record.time}
-                    </td>
-
-                    <td>
-                      {record.verification_method}
-                    </td>
-
-                  </tr>
-
-              )
-          )}
-
-          </tbody>
-
-        </table>
-
-      </main>
-  );
+      </div>
+  )
 }
 
 
-export default App;
+export default App
